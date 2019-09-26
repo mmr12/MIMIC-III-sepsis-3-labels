@@ -30,7 +30,7 @@ class make_labels:
         if schema_write_name is not None:
             self.query_schema = 'SET search_path to ' + schema_write_name + ','+schema_read_name+';'
         else:
-            self.query_schema = 'SET search_path to ' + schema_write_name ';'
+            self.query_schema = 'SET search_path to ' + schema_write_name + ';'
         self.cwd = os.path.dirname(os.path.abspath(__file__))
 
     def generate_all_sepsis_onset(self):
