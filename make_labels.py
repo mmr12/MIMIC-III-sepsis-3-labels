@@ -15,7 +15,8 @@ class make_labels:
                  host,
                  dbname,
                  schema_write_name,
-                 schema_read_name):
+                 schema_read_name,
+                 path):
         """
         Initialise function
         :param sqluser:             user name
@@ -31,7 +32,11 @@ class make_labels:
             self.query_schema = 'SET search_path to ' + schema_write_name + ','+schema_read_name+';'
         else:
             self.query_schema = 'SET search_path to ' + schema_write_name + ';'
-        self.cwd = os.path.dirname(os.path.abspath(__file__))
+        if path is None:    
+            self.cwd = os.path.dirname(os.path.abspath(__file__))
+            self.path = os.path.abspath(os.path.join(self.cwd, os.pardir, os.pardir, os.pardir))
+        else:
+            self.path = path
 
     def generate_all_sepsis_onset(self):
         """
@@ -91,7 +96,7 @@ class make_labels:
         self.sofa_within_si.loc[self.sofa_within_si.sofa_delta >= 2, "sepsis_onset"] = 1
 
         # save
-        path = os.path.abspath(os.path.join(self.cwd, os.pardir, os.pardir, os.pardir)) + "/data/interim/"
+        path = self.path + "/data/interim/"
         self.sofa_within_si.to_csv(path + "19-06-12-detailed-case-labels.csv")
 
     def filter_first_sepsis_onset(self):
@@ -155,7 +160,7 @@ class make_labels:
 
     def generate_sofa_delta_table(self):
         self.create_table(sqlfile="/sofa_delta.sql")
-        path = os.path.abspath(os.path.join(self.cwd, os.pardir, os.pardir, os.pardir)) + "/data/interim/"
+        path = self.path + "/data/interim/"
         self.build_df("select * from sofa_delta").to_csv(path + "19-07-02-sofa-delta.csv")
 
 
@@ -280,7 +285,8 @@ def main(args):
                          host=args.host,
                          dbname=args.dbname,
                          schema_write_name=args.schema_write_name,
-                         schema_read_name=args.schema_read_name)
+                         schema_read_name=args.schema_read_name,
+                         path=args.output_path)
     labels.generate_SI_data()
     labels.generate_SOFA_data()
     labels.generate_all_sepsis_onset()
@@ -303,6 +309,9 @@ def parse_arg():
                         help="SQL read/main schema name")
     parser.add_argument("-w", "--schema_write_name",
                         help="SQL write schema name (optional)", 
+                        default=None)
+    parser.add_argument("-o", "--output_path",
+                        help="where to save tables", 
                         default=None)
     return parser.parse_args()
 
