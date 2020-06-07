@@ -9,8 +9,8 @@ First make sure all the requirements in ```requirements.txt``` are met:
 ```pip install -r requirements.txt```
 
 Then run:
-python make_labels.py [-h] -u SQLUSER -pw SQLPASS -ht HOST -db DBNAME -r
-                      SCHEMA_READ_NAME [-w SCHEMA_WRITE_NAME]
+`python make_labels.py [-h] -u SQLUSER -pw SQLPASS -ht HOST -db DBNAME -r
+                      SCHEMA_READ_NAME [-w SCHEMA_WRITE_NAME]`
                       
 ## Aknowledgements
 If you find this code useful we would appreciate if you could cite our work.
